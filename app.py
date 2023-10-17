@@ -12,18 +12,24 @@ def get_project_status(project_name):
     return project_statuses.get(project_name)
 
 # Function to read the project notes
-def read_project_notes(project_path):
-    notes_path = f"{project_path}/notes.txt"
-    if os.path.exists(notes_path):
-        with open(notes_path, "r") as file:
+def read_project_notes(project_name):
+    project_path = f"C:/Users/tony0/projects/{project_name}/notes.txt"  # Replace with your actual path
+    if os.path.exists(project_path):
+        with open(project_path, "r", encoding='utf-8') as file:
             return file.read()
-    return None  # Return None if notes.txt does not exist
-
+    else:
+        with open(project_path, "w", encoding='utf-8') as file:
+            file.write("This is a new project. More details to be added.")
+        return "A new notes.txt file has been created for this project."
+            
 # Title of your interface
 st.title('ProjectPal Interface')
 
-# Input field for project name
-project_name = st.text_input("Enter project name:")
+# Get a list of all projects
+projects = os.listdir('C:/Users/tony0/projects/')  # Replace with your actual path
+
+# Dropdown list for project names
+project_name = st.selectbox("Select a project:", projects)
 
 # Button to check project status
 if st.button("Check Project Status"):
@@ -32,12 +38,9 @@ if st.button("Check Project Status"):
         st.write(f"Status of {project_name}: {status}")
     else:
         st.write(f"No status found for {project_name}. Looking for notes.txt...")
-        project_path = f"path/to/{project_name}"  # Adjust the path to your projects
-        project_notes = read_project_notes(project_path)
+        project_notes = read_project_notes(project_name)
         if project_notes:
             st.write(f"Notes for {project_name}:")
             st.text(project_notes)
         else:
             st.write(f"No notes.txt found for {project_name}. Ending conversation.")
-
-# Adjust the path to your projects accordingly and ensure the project name entered matches the folder name of your project.
